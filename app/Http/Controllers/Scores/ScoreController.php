@@ -20,6 +20,7 @@ class ScoreController extends Controller
         $scores = Score::query()
             ->orderByDesc('score')
             ->where('game', $request->route('game'))
+            ->limit(10)
             ->get();
 
         return response()->json(ScoresIndexResource::collection($scores));
