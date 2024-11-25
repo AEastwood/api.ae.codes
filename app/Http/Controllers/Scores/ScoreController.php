@@ -41,6 +41,9 @@ class ScoreController extends Controller
      */
     public function store(StoreScoreRequest $request): JsonResponse
     {
+        $game = $request->route('game');
+        Cache::forget("api.{$game}.scores.index");
+
         $score = Score::create($request->validated());
 
         return response()->json([
