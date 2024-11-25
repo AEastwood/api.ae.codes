@@ -20,18 +20,16 @@ class ScoreController extends Controller
     {
         $game = $request->route('game');
 
-        $scores = Cache::rememberForever("api.{$game}.scores.index", function () use ($game) {
-            return Score::query()
-                ->select([
-                    'game',
-                    'name',
-                    'score',
-                ])
-                ->orderByDesc('score')
-                ->where('game', $game)
-                ->limit(10)
-                ->get();
-        });
+        $scores = Score::query()
+            ->select([
+                'game',
+                'name',
+                'score',
+            ])
+            ->orderByDesc('score')
+            ->where('game', $game)
+            ->limit(10)
+            ->get();
 
         return response()->json(ScoresIndexResource::collection($scores));
     }
@@ -41,9 +39,6 @@ class ScoreController extends Controller
      */
     public function store(StoreScoreRequest $request): JsonResponse
     {
-        $game = $request->route('game');
-        Cache::forget("api.{$game}.scores.index");
-
         $score = Score::create($request->validated());
 
         return response()->json([
