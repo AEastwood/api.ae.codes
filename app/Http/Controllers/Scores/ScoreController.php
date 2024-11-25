@@ -9,6 +9,7 @@ use App\Http\Resources\Scores\ScoresIndexResource;
 use App\Http\Resources\Scores\StoreScoreResource;
 use App\Models\Scores\Score;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class ScoreController extends Controller
 {
@@ -17,11 +18,20 @@ class ScoreController extends Controller
      */
     public function index(GetScoresIndexRequest $request)
     {
-        $scores = Score::query()
-            ->orderByDesc('score')
-            ->where('game', $request->route('game'))
-            ->limit(10)
-            ->get();
+        $game = $request->route('game');
+
+        $scores = Cache::rememberForever("api.{$game}.scores.index", function () use ($game) {
+            return Score::query()
+                ->select([
+                    'game',
+                    'name',
+                    'score',
+                ])
+                ->orderByDesc('score')
+                ->where('game', $game)
+                ->limit(10)
+                ->get();
+        });
 
         return response()->json(ScoresIndexResource::collection($scores));
     }

@@ -18,7 +18,6 @@ class ScoresIndexResource extends JsonResource
             'game' => $this->game,
             'name' => $this->name,
             'score' => $this->score,
-            'created_at' => $this->created_at->format('d/m/Y'),
         ];
     }
 }
