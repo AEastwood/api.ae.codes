@@ -6,4 +6,5 @@ enum GameTypes: string
 {
     case FlappyBird = 'flappy bird';
     case Runner = 'runner';
+    case Tetris = 'tetris';
 }
